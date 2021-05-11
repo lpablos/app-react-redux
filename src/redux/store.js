@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 
 import pokeReduce from './pokeDucks'
 
-const rootReduce  = combineReducers({
+const rootReducer  = combineReducers({
     pokemones : pokeReduce
 })
 
