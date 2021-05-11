@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { obtenerPokemonesAccion } from '../redux/pokeDucks'
+import { obtenerPokemonesAccion, siguientePokemonAcccion} from '../redux/pokeDucks'
 
 const Pokemones = () => {
     
@@ -11,6 +11,7 @@ const Pokemones = () => {
         <div>
             <h4>Lista de pokemones</h4>
             <button onClick={ ()=> dispatch(obtenerPokemonesAccion()) }>Obtener pokemones</button>
+            <button onClick={ ()=> dispatch(siguientePokemonAcccion(20))}>Siguiente</button>
             <ul>
                 {
                     pokemones.map(item=>(
