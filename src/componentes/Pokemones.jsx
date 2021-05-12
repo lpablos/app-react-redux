@@ -1,17 +1,32 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { obtenerPokemonesAccion, siguientePokemonAcccion} from '../redux/pokeDucks'
+import { obtenerPokemonesAccion, siguientePokemonAccion, anteriorPokemonAccion} from '../redux/pokeDucks'
 
 const Pokemones = () => {
     
     const dispatch = useDispatch()
-    const pokemones = useSelector(store => store.pokemones.array)
+    const previous = useSelector(store => store.pokemones.previous)
+    const pokemones = useSelector(store => store.pokemones.results)
+    const next = useSelector(store => store.pokemones.next)
 
     return (
         <div>
             <h4>Lista de pokemones</h4>
-            <button onClick={ ()=> dispatch(obtenerPokemonesAccion()) }>Obtener pokemones</button>
-            <button onClick={ ()=> dispatch(siguientePokemonAcccion(20))}>Siguiente</button>
+            {
+                previous
+                &&  <button onClick={ ()=> dispatch(anteriorPokemonAccion()) }> Anterior</button>
+            }
+
+            {
+                pokemones.length === 0 
+                && <button onClick={ ()=> dispatch(obtenerPokemonesAccion()) }>Obtener pokemones</button>
+            }
+
+            {
+                next 
+                && <button onClick={ ()=> dispatch(siguientePokemonAccion())}>Siguiente</button>
+            }
+            
             <ul>
                 {
                     pokemones.map(item=>(
