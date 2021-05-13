@@ -30,16 +30,25 @@ export default function pokeReduce(state = dataInicial, action){
 export const obtenerPokemonesAccion = () => async (dispatch, getState) => {
     // sin desctrucutracion de un objecto
     // const offset = getState().pokemones.offset
-    try {
-        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=20`)
-        // console.log(res.data);
+    if(localStorage.getItem('offsert=0')){
+        console.log("Datos desde el storage");
         dispatch({
             type: OBTENER_POKEMONES_EXITO,
-            payload: res.data
+            payload : JSON.parse(localStorage.getItem('offsert=0'))
         })
-
-    } catch (error) {
-        console.log(error);
+    }else{
+        try {
+            console.log("Datos desde el servicio");
+            const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=20`)
+            // console.log(res.data);
+            dispatch({
+                type: OBTENER_POKEMONES_EXITO,
+                payload: res.data
+            })
+            localStorage.setItem('offsert=0', JSON.stringify(res.data))
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
