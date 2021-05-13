@@ -56,34 +56,54 @@ export const siguientePokemonAccion = () => async (dispatch, getState) => {
     // destructuracion de un objecto
     // const { offset } = getState().pokemones 
     // const siguiente = offset + numero
-    const { next } = getState().pokemones    
-    try {
-        // const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${siguiente}&limit=20`)
-        const res = await axios.get(next)
+    const { next } = getState().pokemones  
+    if(localStorage.getItem(next)){
+        console.log("LocalStorage Next");
         dispatch({
             type: GET_POKE_NEXT_SUCCESS,
-            payload: res.data
-            // payload: {
-            //     array : res.data.results,
-            //     offset : siguiente   
-            // }
-        })        
-    } catch (error) {
-        console.log(error);
+            payload : JSON.parse(localStorage.getItem(next))
+        })
+    }else{
+        console.log("peticion Next");
+        try {
+            // const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${siguiente}&limit=20`)
+            const res = await axios.get(next)
+            dispatch({
+                type: GET_POKE_NEXT_SUCCESS,
+                payload: res.data
+                // payload: {
+                //     array : res.data.results,
+                //     offset : siguiente   
+                // }
+            })
+            localStorage.setItem(next, JSON.stringify(res.data))        
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
 export const anteriorPokemonAccion = () => async ( dispach, getState ) =>{
-    try {
-        const { previous } = getState().pokemones
-        const res = await axios.get(previous)        
+    const { previous } = getState().pokemones
+    if(localStorage.getItem(previous)){
+        console.log("Previos localStorage");
         dispach({
             type: GET_POKE_NEXT_SUCCESS,
-            payload : res.data
+            payload : JSON.parse(localStorage.getItem(previous))
         })
-
-    } catch (error) {
-        console.log(error);
+    }else{
+        try {
+            console.log("Previous peticion");
+            const res = await axios.get(previous)        
+            dispach({
+                type: GET_POKE_NEXT_SUCCESS,
+                payload : res.data
+            })
+            localStorage.setItem(previous, JSON.stringify(res.data))
+    
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 }
