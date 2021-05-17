@@ -10,6 +10,7 @@ const dataInicial = {
 }
 const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
 const GET_POKE_NEXT_SUCCESS = 'GET_POKE_NEXT_SUCCESS'
+const POKE_INF_EXITO = "POKE_INF_EXITO"
 
 
 //reduce
@@ -19,8 +20,9 @@ export default function pokeReduce(state = dataInicial, action){
             return { ...state, ...action.payload }
         case GET_POKE_NEXT_SUCCESS:
             // return { ...state, array: action.payload.array, offset: action.payload.offset} 
-            return { ...state, ...action.payload}   
-    
+            return { ...state, ...action.payload }
+        case POKE_INF_EXITO:
+            return { ...state, unPokemon: action.payload }    
         default:
             return state
     }
@@ -30,16 +32,14 @@ export default function pokeReduce(state = dataInicial, action){
 export const obtenerPokemonesAccion = () => async (dispatch, getState) => {
     // sin desctrucutracion de un objecto
     // const offset = getState().pokemones.offset
-    if(localStorage.getItem('offsert=0')){
-        console.log("Datos desde el storage");
+    if(localStorage.getItem('offsert=0')){        
         dispatch({
             type: OBTENER_POKEMONES_EXITO,
             payload : JSON.parse(localStorage.getItem('offsert=0'))
         })
     }else{
-        try {
-            console.log("Datos desde el servicio");
-            const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=20`)
+        try {            
+            const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=10`)
             // console.log(res.data);
             dispatch({
                 type: OBTENER_POKEMONES_EXITO,
@@ -58,7 +58,7 @@ export const siguientePokemonAccion = () => async (dispatch, getState) => {
     // const siguiente = offset + numero
     const { next } = getState().pokemones  
     if(localStorage.getItem(next)){
-        console.log("LocalStorage Next");
+        
         dispatch({
             type: GET_POKE_NEXT_SUCCESS,
             payload : JSON.parse(localStorage.getItem(next))
@@ -86,14 +86,13 @@ export const siguientePokemonAccion = () => async (dispatch, getState) => {
 export const anteriorPokemonAccion = () => async ( dispach, getState ) =>{
     const { previous } = getState().pokemones
     if(localStorage.getItem(previous)){
-        console.log("Previos localStorage");
+        
         dispach({
             type: GET_POKE_NEXT_SUCCESS,
             payload : JSON.parse(localStorage.getItem(previous))
         })
     }else{
-        try {
-            console.log("Previous peticion");
+        try {            
             const res = await axios.get(previous)        
             dispach({
                 type: GET_POKE_NEXT_SUCCESS,
@@ -106,4 +105,34 @@ export const anteriorPokemonAccion = () => async ( dispach, getState ) =>{
         }
     }
 
+}
+
+export const unPokeDetalleAccion = (url = 'https://pokeapi.co/api/v2/pokemon/1/') => async (dispach, getState )=>{
+    if(localStorage.getItem(url)){        
+        dispach({
+            type: POKE_INF_EXITO,
+            payload: JSON.parse(localStorage.getItem(url))   
+        })
+    }else{        
+        try {
+            const res = await axios.get(url)
+            dispach({
+                type: POKE_INF_EXITO,
+                payload : {
+                    name: res.data.name,
+                    weight : res.data.weight,
+                    height: res.data.height, 
+                    foto: res.data.sprites.front_default
+                }            
+            })
+            localStorage.setItem(url,JSON.stringify({
+                name: res.data.name,
+                weight : res.data.weight,
+                height: res.data.height, 
+                foto: res.data.sprites.front_default
+            }))
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
