@@ -2,8 +2,10 @@ import React from 'react'
 
 const Login = () => {
     return (
-        <div>
-            <h3>Area de Login</h3>
+        <div className="mt-5 text-center">
+            <h3>Ingreso con google</h3>
+            <button className="btn btn-dark">Acceder</button>
+            
         </div>
     )
 }
