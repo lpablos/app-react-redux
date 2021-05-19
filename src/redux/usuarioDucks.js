@@ -22,7 +22,7 @@ export default function usuarioReduce(state = dataInicial, action){
         case USUARIO_ERROR:
             return { ...state }
         case USUARIO_EXITO:
-            return { ...state, loading: false, user: action.payload }
+            return { ...state, loading: false, user: action.payload, activo: true }
         default:
             return state
     }
@@ -61,8 +61,7 @@ export const ingresoUsuarioAccion = () => async (dispatch) =>{
 }
 
 export const leerUsuarioActivoAccion = () => (dispatch) =>{
-    if(localStorage.getItem('usuario')){
-        alert("Hola")
+    if(localStorage.getItem('usuario')){        
         dispatch({
             type: USUARIO_EXITO,
             payload : JSON.parse(localStorage.getItem('usuario'))
