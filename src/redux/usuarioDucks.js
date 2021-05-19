@@ -12,6 +12,7 @@ const dataInicial = {
 const LOADING = 'LOADING'
 const USUARIO_ERROR = 'USUARIO_ERROR'
 const USUARIO_EXITO = 'USUARIO_EXITO'
+const CERRAR_SESSION = 'CERRAR_SESSION'
 
 
 // Reduce
@@ -23,6 +24,8 @@ export default function usuarioReduce(state = dataInicial, action){
             return { ...state }
         case USUARIO_EXITO:
             return { ...state, loading: false, user: action.payload, activo: true }
+        case CERRAR_SESSION:
+            return { ...state, loading:false , activo: false }
         default:
             return state
     }
@@ -67,4 +70,11 @@ export const leerUsuarioActivoAccion = () => (dispatch) =>{
             payload : JSON.parse(localStorage.getItem('usuario'))
         })
     }
+}
+
+export const cerrarSessionAccion = () => (dispatch) => {
+    auth.signOut()
+    localStorage.removeItem('usuario')
+    dispatch({ type: CERRAR_SESSION })
+    
 }
