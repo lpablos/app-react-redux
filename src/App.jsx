@@ -7,33 +7,49 @@ import {auth} from './firebase'
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from "react-router-dom";
 
 function App() {
 
   const [firebaseUser, setFirebaseUser] = useState(false)
+  console.log("Estado inicial de firebase", firebaseUser)
 
   React.useEffect(() => {
+    const fetchUser = () => {
+      auth.onAuthStateChanged(user => {
+        if(user){
+          setFirebaseUser(user)
+        }else{
+          setFirebaseUser(null)
+        }
+      })
+    }
     fetchUser()
   }, [])
   
-  const fetchUser = () => {
-    auth.onAuthStateChanged(user => {
-        console.log(user)
-        (user)
-          ?setFirebaseUser(user)
-          :setFirebaseUser(null)
-        
-    })    
+  const RutaPrivada = ({component, path, ...rest})=>{
+    // console.log({component}, {path}, {...rest}); asi se verifican las opciones 
+    if(localStorage.getItem('usuario')){
+      const usuarioStorage = JSON.parse(localStorage.getItem('usuario'))
+      if(usuarioStorage.uid ===firebaseUser.uid){
+        return <Route component={component} to={path} {...rest}/>
+      }else{
+        <Redirect to='/login' {...rest}/>
+      }
+    }else{
+      return <Redirect to='/login' {...rest}/>
+    }
   }
+
   
-  return firebaseUser !==false?  (
+  return firebaseUser !== false ? (
     <Router>
       <div className="container mt-3">
         <Navbar/>
         <Switch>
-          <Route component={Pokemones} path="/" exact/>
+          <RutaPrivada component={Pokemones} path="/" exact/>
           <Route component={Login} path="/login" exact/>          
         </Switch>
       </div>
