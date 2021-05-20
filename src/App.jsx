@@ -1,7 +1,8 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Pokemones from './componentes/Pokemones'
 import Login from './componentes/Login'
 import Navbar from './componentes/Navbar';
+import {auth} from './firebase'
 
 import {
   BrowserRouter as Router,
@@ -10,8 +11,24 @@ import {
 } from "react-router-dom";
 
 function App() {
+
+  const [firebaseUser, setFirebaseUser] = useState(false)
+
+  React.useEffect(() => {
+    fetchUser()
+  }, [])
   
-  return (
+  const fetchUser = () => {
+    auth.onAuthStateChanged(user => {
+        console.log(user)
+        (user)
+          ?setFirebaseUser(user)
+          :setFirebaseUser(null)
+        
+    })    
+  }
+  
+  return firebaseUser !==false?  (
     <Router>
       <div className="container mt-3">
         <Navbar/>
@@ -21,7 +38,7 @@ function App() {
         </Switch>
       </div>
     </Router>
-  );
+  ): (<p>Cargando...</p>);
 }
 
 export default App;
