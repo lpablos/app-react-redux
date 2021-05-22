@@ -36,7 +36,7 @@ function App() {
       if(usuarioStorage.uid ===firebaseUser.uid){
         return <Route component={component} to={path} {...rest}/>
       }else{
-        <Redirect to='/login' {...rest}/>
+        return <Redirect to='/login' {...rest}/>
       }
     }else{
       return <Redirect to='/login' {...rest}/>
