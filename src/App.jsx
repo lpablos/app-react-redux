@@ -14,8 +14,7 @@ import {
 function App() {
 
   const [firebaseUser, setFirebaseUser] = useState(false)
-  console.log("Estado inicial de firebase", firebaseUser)
-
+  
   React.useEffect(() => {
     const fetchUser = () => {
       auth.onAuthStateChanged(user => {
