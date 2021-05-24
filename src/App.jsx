@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import Pokemones from './componentes/Pokemones'
+import Perfil from './componentes/Perfil'
 import Login from './componentes/Login'
-import Navbar from './componentes/Navbar';
+import Navbar from './componentes/Navbar'
 import {auth} from './firebase'
 
 import {
@@ -14,7 +15,7 @@ import {
 function App() {
 
   const [firebaseUser, setFirebaseUser] = useState(false)
-  
+
   React.useEffect(() => {
     const fetchUser = () => {
       auth.onAuthStateChanged(user => {
@@ -49,6 +50,7 @@ function App() {
         <Navbar/>
         <Switch>
           <RutaPrivada component={Pokemones} path="/" exact/>
+          <RutaPrivada component={Perfil} path="/perfil" exact/>
           <Route component={Login} path="/login" exact/>          
         </Switch>
       </div>
