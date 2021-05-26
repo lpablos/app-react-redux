@@ -1,5 +1,6 @@
 // librearias
-import { auth, app, db } from '../firebase'
+import { useStore } from 'react-redux'
+import { auth, app, db, store } from '../firebase'
 
 
 // Constantes
@@ -114,6 +115,36 @@ export const actualizarUsuarioAccion = (nombreActualizado) => async (dispatch, g
             payload : usuario
         })
         localStorage.setItem('usuario', JSON.stringify(usuario))
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const editarFotoAccion = (imagenEditada) => async (dispatch, getState)=>{
+    dispatch({
+        type: LOADING
+    })
+    const {user} = getState().usuario 
+    try {
+        // Subida de archivo al storage
+        const imagenRef = await store.ref().child(user.email).child('foto perfil')
+        await imagenRef.put(imagenEditada);
+        const imgUrl = imagenRef.getDownloadURL();
+        // Actualizacion en db
+        await db.collection('usuarios')
+            .doc(user.email)
+            .update({
+                photoURL:imgUrl
+            })
+        // Actualizacion en el store
+        let usuario = {
+            ...user,
+            photoURL:imgUrl
+        }
+        dispatch({
+            type : USUARIO_EXITO,
+            payload : usuario
+        })
     } catch (error) {
         console.log(error);
     }
