@@ -12,25 +12,31 @@ const Perfil = () => {
     const [activarFormulario, setActivarFormulario] = useState(false)
     const [activarFormularioImagen, setActivarFormularioImagen] = useState(false)
     const [FotoNueva, setFotoNueva] = useState(null)
+    const [errorImagenTexto, setErrorImagenTexto] = useState(null)
     
 
     const actualizarUsuario = () => {
         if(!nameUser.trim()){
-            console.log('Nombre vacio');
+            setErrorImagenTexto('Nombre vacio')
             return 
         }
+        setErrorImagenTexto(null)
         dispatch(actualizarUsuarioAccion(nameUser))
         setActivarFormulario(false)
     }
     const actualizarImagen = () =>{
-        let imagenCliente = FotoNueva.target.files[0]
-        if( imagenCliente.type === 'image/jpeg' || imagenCliente.type === 'image/jpg'){
-            dispatch(editarFotoAccion(imagenCliente))
+        if(FotoNueva != null){
+            let imagenCliente = FotoNueva.target.files[0]
+            if( imagenCliente.type === 'image/jpeg' || imagenCliente.type === 'image/jpg'){
+                setErrorImagenTexto(null)
+                dispatch(editarFotoAccion(imagenCliente))
+                setActivarFormularioImagen(false)
+            }else{
+                setErrorImagenTexto('Seleccione un archvio valido extension jpeg, jpg')
+            }
         }else{
-
-        }
-        
-        
+            setErrorImagenTexto('Seleccione un documento extension jpeg o jpg')
+        }        
     }
 
     return (
@@ -44,7 +50,14 @@ const Perfil = () => {
                         <button className="btn btn-dark" onClick={()=>setActivarFormulario(true)}>Ediar nombre</button>
                         <button className="btn btn-dark" onClick={()=>setActivarFormularioImagen(true)}>Actualizar Imagen</button>                  
                     </div>
-                   
+                    {
+                        errorImagenTexto &&
+                        <div className="d grid gap-2 col-6 mx-auto mt-3">
+                            <div className="alert alert-danger" role="alert">
+                                {errorImagenTexto}
+                            </div>
+                        </div>
+                    }
 
                 </div>
                 {

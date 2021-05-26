@@ -128,7 +128,8 @@ export const editarFotoAccion = (imagenEditada) => async (dispatch, getState)=>{
         // Subida de archivo al storage
         const imagenRef = await store.ref().child(user.email).child('foto perfil')
         await imagenRef.put(imagenEditada);
-        const imgUrl = imagenRef.getDownloadURL();
+        const imgUrl = await imagenRef.getDownloadURL();
+        console.log("Esta es la url", imgUrl);
         // Actualizacion en db
         await db.collection('usuarios')
             .doc(user.email)
@@ -144,6 +145,8 @@ export const editarFotoAccion = (imagenEditada) => async (dispatch, getState)=>{
             type : USUARIO_EXITO,
             payload : usuario
         })
+        // Actualizamo el localStorage
+        localStorage.setItem('usuario', JSON.stringify(usuario))
     } catch (error) {
         console.log(error);
     }
